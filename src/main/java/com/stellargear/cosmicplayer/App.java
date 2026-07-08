@@ -1,5 +1,6 @@
 package com.stellargear.cosmicplayer;
 
+import com.stellargear.cosmicplayer.services.FileService;
 import com.stellargear.cosmicplayer.services.PlayerService;
 import java.io.File;
 import java.util.Arrays;
@@ -12,14 +13,11 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import org.jaudiotagger.audio.AudioFile;
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.tag.FieldKey;
-import org.jaudiotagger.tag.Tag;
 
 public class App extends Application {
 
     PlayerService mediaPlayer = new PlayerService();
+    FileService fileService = new FileService();
 
     @Override
     public void start(Stage stage) {
@@ -46,9 +44,9 @@ public class App extends Application {
         });
 
         playBtn.setOnAction(e -> {
-            String seleccionado = list.getSelectionModel().getSelectedItem();
-            if (seleccionado != null) mediaPlayer.playSong(
-                new File(folder, seleccionado)
+            String selected = list.getSelectionModel().getSelectedItem();
+            if (selected != null) mediaPlayer.playSong(
+                new File(folder, selected)
             );
         });
 
@@ -56,17 +54,10 @@ public class App extends Application {
             .selectedItemProperty()
             .addListener((obs, old, nuevo) -> {
                 if (nuevo == null) return;
-
-                try {
-                    File archivo = new File(folder, nuevo);
-                    AudioFile f = AudioFileIO.read(archivo);
-                    Tag tag = f.getTag();
-                    songName.setText(tag.getFirst(FieldKey.TITLE));
-                    artistName.setText(tag.getFirst(FieldKey.ARTIST));
-                } catch (Exception e) {
-                    songName.setText(nuevo);
-                    artistName.setText(nuevo);
-                }
+                File song = new File(folder, nuevo);
+                var meta = fileService.readMetadata(song);
+                songName.setText(meta.title());
+                artistName.setText(meta.artist());
             });
 
         ToolBar playerBar = new ToolBar(
