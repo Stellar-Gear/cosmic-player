@@ -8,7 +8,7 @@ public class PlayerService {
 
     private MediaPlayer mediaPlayer;
 
-    public void playSong(File song) {
+    public void playSong(File song, double volume) {
         if (
             mediaPlayer != null &&
             mediaPlayer.getStatus() == MediaPlayer.Status.PAUSED
@@ -20,6 +20,7 @@ public class PlayerService {
         if (mediaPlayer != null) mediaPlayer.stop();
         Media media = new Media(song.toURI().toString());
         mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setVolume(volume);
         mediaPlayer.play();
     }
 

@@ -2,15 +2,13 @@ package com.stellargear.cosmicplayer;
 
 import com.stellargear.cosmicplayer.services.FileService;
 import com.stellargear.cosmicplayer.services.PlayerService;
+import com.stellargear.cosmicplayer.ui.PlayerToolbar;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -18,13 +16,10 @@ public class App extends Application {
 
     PlayerService mediaPlayer = new PlayerService();
     FileService fileService = new FileService();
+    PlayerToolbar playerToolbar = new PlayerToolbar();
 
     @Override
     public void start(Stage stage) {
-        Label songName = new Label("Song Name");
-        Label separator = new Label(" - ");
-        Label artistName = new Label("Artist");
-
         File folder = new File("/home/dimewolf/Música/");
         File[] files = folder.listFiles(File::isFile);
 
@@ -36,19 +31,23 @@ public class App extends Application {
                 .forEach(list.getItems()::add);
         }
 
-        Button playBtn = new Button("Reproducir");
-
-        Button stopBtn = new Button("Detener");
-        stopBtn.setOnAction(e -> {
-            if (mediaPlayer != null) mediaPlayer.pause();
-        });
-
-        playBtn.setOnAction(e -> {
+        playerToolbar.getPlayBtn().setOnAction(e -> {
             String selected = list.getSelectionModel().getSelectedItem();
             if (selected != null) mediaPlayer.playSong(
-                new File(folder, selected)
+                new File(folder, selected), playerToolbar.getVolumeSlider().getValue()
             );
         });
+
+        playerToolbar.getStopBtn().setOnAction(e -> mediaPlayer.pause());
+
+        playerToolbar
+            .getVolumeSlider()
+            .valueProperty()
+            .addListener((obs, old, val) -> {
+                if (mediaPlayer != null) mediaPlayer.setVolume(
+                    val.doubleValue()
+                );
+            });
 
         list.getSelectionModel()
             .selectedItemProperty()
@@ -56,21 +55,12 @@ public class App extends Application {
                 if (nuevo == null) return;
                 File song = new File(folder, nuevo);
                 var meta = fileService.readMetadata(song);
-                songName.setText(meta.title());
-                artistName.setText(meta.artist());
+                playerToolbar.setSongInfo(meta.title(), meta.artist());
             });
-
-        ToolBar playerBar = new ToolBar(
-            songName,
-            separator,
-            artistName,
-            playBtn,
-            stopBtn
-        );
 
         BorderPane root = new BorderPane();
         root.setCenter(list);
-        root.setBottom(playerBar);
+        root.setBottom(playerToolbar.getNode());
 
         Scene scene = new Scene(root, 800, 600);
         stage.setScene(scene);
