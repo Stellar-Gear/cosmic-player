@@ -11,7 +11,6 @@ public class PlayerToolbar {
     private final Label songName = new Label("Song Name");
     private final Label artistName = new Label("Artist");
     private final Button playBtn = new Button("Reproducir");
-    private final Button stopBtn = new Button("Detener");
     private final Slider volumeSlider = new Slider(0, 1, 1);
 
     public PlayerToolbar() {
@@ -21,7 +20,6 @@ public class PlayerToolbar {
             separator,
             artistName,
             playBtn,
-            stopBtn,
             volumeSlider
         );
     }
@@ -32,10 +30,6 @@ public class PlayerToolbar {
 
     public Button getPlayBtn() {
         return playBtn;
-    }
-
-    public Button getStopBtn() {
-        return stopBtn;
     }
 
     public Slider getVolumeSlider() {

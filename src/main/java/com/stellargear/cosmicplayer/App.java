@@ -24,13 +24,11 @@ public class App extends Application {
 
         playerToolbar.getPlayBtn().setOnAction(e -> {
             String selected = songList.getSelected();
-            if (selected != null) mediaPlayer.playSong(
+            if (selected != null) mediaPlayer.playOrResume(
                 new File(folder, selected),
                 playerToolbar.getVolumeSlider().getValue()
             );
         });
-
-        playerToolbar.getStopBtn().setOnAction(e -> mediaPlayer.pause());
 
         playerToolbar
             .getVolumeSlider()

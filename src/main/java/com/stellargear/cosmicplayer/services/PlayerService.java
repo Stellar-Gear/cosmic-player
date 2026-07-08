@@ -3,11 +3,14 @@ package com.stellargear.cosmicplayer.services;
 import java.io.File;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
+import uk.co.caprica.vlcj.player.base.State;
 
 public class PlayerService {
 
     private final MediaPlayerFactory factory = new MediaPlayerFactory();
     private final MediaPlayer mediaPlayer;
+
+    private File currentSong;
 
     public PlayerService() {
         mediaPlayer = factory.mediaPlayers().newMediaPlayer();
@@ -16,14 +19,30 @@ public class PlayerService {
     public void playSong(File song, double val) {
         changeVolume(val);
         mediaPlayer.media().play(song.getAbsolutePath());
+        currentSong = song;
     }
 
-    public void pause() {
-        mediaPlayer.controls().pause();
-    }
+    public void playOrResume(File song, double val) {
+        State state = mediaPlayer.status().state();
 
-    public void stop() {
-        mediaPlayer.controls().stop();
+        boolean isSameSong = currentSong != null && currentSong.equals(song);
+
+        if (isSameSong) {
+            switch (state) {
+                case PLAYING:
+                    mediaPlayer.controls().pause();
+                    break;
+                case PAUSED:
+                    changeVolume(val);
+                    mediaPlayer.controls().play();
+                    break;
+                default:
+                    playSong(song, val);
+                    break;
+            }
+        } else {
+            playSong(song, val);
+        }
     }
 
     public void changeVolume(double value) {
@@ -34,19 +53,10 @@ public class PlayerService {
             return;
         }
 
-        double db = -12.0 * (1 - value);
+        double db = -14.0 * (1 - value);
         double gain = Math.pow(10, db / 20.0);
         int vol = (int) Math.round(gain * 100);
 
         mediaPlayer.audio().setVolume(vol);
-    }
-
-    public boolean isPlaying() {
-        return mediaPlayer.status().isPlaying();
-    }
-
-    public void release() {
-        mediaPlayer.release();
-        factory.release();
     }
 }
