@@ -1,35 +1,69 @@
 package com.stellargear.cosmicplayer.ui;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.control.ToolBar;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
 public class PlayerToolbar {
 
-    private final ToolBar bar;
+    private final GridPane bar;
     private final Label songName = new Label("Song Name");
     private final Label artistName = new Label("Artist");
     private final Button playBtn = new Button("Reproducir");
     private final Slider volumeSlider = new Slider(0, 1, 1);
+    private final VBox songBox = new VBox(songName, artistName);
 
     public PlayerToolbar() {
-        Label separator = new Label(" - ");
-        bar = new ToolBar(
-            songName,
-            separator,
-            artistName,
-            playBtn,
-            volumeSlider
-        );
+        songBox.setAlignment(Pos.CENTER_LEFT);
+        HBox centerBox = new HBox(playBtn);
+        centerBox.setAlignment(Pos.CENTER);
+        HBox rightBox = new HBox(volumeSlider);
+        rightBox.setAlignment(Pos.CENTER_RIGHT);
+
+        bar = new GridPane();
+
+        ColumnConstraints left = new ColumnConstraints();
+        left.setPercentWidth(35);
+        ColumnConstraints center = new ColumnConstraints();
+        center.setPercentWidth(30);
+        ColumnConstraints right = new ColumnConstraints();
+        right.setPercentWidth(35);
+        bar.getColumnConstraints().addAll(left, center, right);
+
+        bar.add(songBox, 0, 0);
+        bar.add(centerBox, 1, 0);
+        bar.add(rightBox, 2, 0);
+
+        GridPane.setHgrow(songBox, Priority.ALWAYS);
+        GridPane.setHgrow(centerBox, Priority.ALWAYS);
+        GridPane.setHgrow(rightBox, Priority.ALWAYS);
+        songBox.setMaxWidth(Double.MAX_VALUE);
+        centerBox.setMaxWidth(Double.MAX_VALUE);
+        rightBox.setMaxWidth(Double.MAX_VALUE);
+
+        songBox.getStyleClass().add("song-box");
+
+        songName.getStyleClass().add("song-name");
+        bar.getStyleClass().add("player-toolbar");
     }
 
-    public ToolBar getNode() {
+    public GridPane getNode() {
         return bar;
     }
 
+
     public Button getPlayBtn() {
         return playBtn;
+    }
+
+    public Label getSongLabel() {
+        return songName;
     }
 
     public Slider getVolumeSlider() {
