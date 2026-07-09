@@ -1,0 +1,14 @@
+.song-name {
+    -fx-font-size: 16px;
+    -fx-text-overrun: ellipsis;
+}
+
+.song-box {
+    -fx-spacing: 2px;
+    -fx-padding: 4px;
+}
+
+.player-toolbar {
+    -fx-spacing: 4px;
+    -fx-padding: 4px;
+}
