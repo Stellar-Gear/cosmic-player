@@ -17,8 +17,8 @@ public class PlayerService {
     }
 
     public void playSong(File song, double val) {
-        changeVolume(val);
         mediaPlayer.media().play(song.getAbsolutePath());
+        changeVolume(val);
         currentSong = song;
     }
 
@@ -53,10 +53,15 @@ public class PlayerService {
             return;
         }
 
-        double db = -14.0 * (1 - value);
+        double db = -12.0 * (1 - value);
         double gain = Math.pow(10, db / 20.0);
         int vol = (int) Math.round(gain * 100);
 
         mediaPlayer.audio().setVolume(vol);
+    }
+
+    public void release() {
+        mediaPlayer.release();
+        factory.release();
     }
 }
