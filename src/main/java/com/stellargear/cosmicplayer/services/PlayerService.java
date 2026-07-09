@@ -60,6 +60,23 @@ public class PlayerService {
         mediaPlayer.audio().setVolume(vol);
     }
 
+    public long getTime() {
+        return mediaPlayer.status().time();
+    }
+
+    public long getLength() {
+        return mediaPlayer.status().length();
+    }
+
+    public void seek(long timeMs) {
+        mediaPlayer.controls().setTime(timeMs);
+    }
+
+    public boolean isPlayable() {
+        State state = mediaPlayer.status().state();
+        return state == State.PLAYING || state == State.PAUSED;
+    }
+
     public void release() {
         mediaPlayer.release();
         factory.release();
