@@ -19,12 +19,22 @@ public class PlayerToolbar {
     private final Slider volumeSlider = new Slider(0, 1, 1);
     private final VBox songBox = new VBox(songName, artistName);
 
+    private final Slider progressSlider = new Slider(0, 100, 0);
+    private final Label currentTimeLabel = new Label("00:00");
+    private final Label totalTimeLabel = new Label("00:00");
+
     public PlayerToolbar() {
         songBox.setAlignment(Pos.CENTER_LEFT);
         HBox centerBox = new HBox(playBtn);
         centerBox.setAlignment(Pos.CENTER);
         HBox rightBox = new HBox(volumeSlider);
         rightBox.setAlignment(Pos.CENTER_RIGHT);
+
+        progressSlider.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(progressSlider, Priority.ALWAYS);
+        HBox progressBox = new HBox(8, currentTimeLabel, progressSlider, totalTimeLabel);
+        progressBox.setAlignment(Pos.CENTER);
+        progressBox.getStyleClass().add("progress-box");
 
         bar = new GridPane();
 
@@ -36,13 +46,16 @@ public class PlayerToolbar {
         right.setPercentWidth(35);
         bar.getColumnConstraints().addAll(left, center, right);
 
-        bar.add(songBox, 0, 0);
-        bar.add(centerBox, 1, 0);
-        bar.add(rightBox, 2, 0);
+        bar.add(progressBox, 0, 0, 3, 1);
+        bar.add(songBox, 0, 1);
+        bar.add(centerBox, 1, 1);
+        bar.add(rightBox, 2, 1);
 
         GridPane.setHgrow(songBox, Priority.ALWAYS);
         GridPane.setHgrow(centerBox, Priority.ALWAYS);
         GridPane.setHgrow(rightBox, Priority.ALWAYS);
+        GridPane.setHgrow(progressBox, Priority.ALWAYS);
+
         songBox.setMaxWidth(Double.MAX_VALUE);
         centerBox.setMaxWidth(Double.MAX_VALUE);
         rightBox.setMaxWidth(Double.MAX_VALUE);
@@ -57,7 +70,6 @@ public class PlayerToolbar {
         return bar;
     }
 
-
     public Button getPlayBtn() {
         return playBtn;
     }
@@ -68,6 +80,18 @@ public class PlayerToolbar {
 
     public Slider getVolumeSlider() {
         return volumeSlider;
+    }
+
+    public Slider getProgressSlider() {
+            return progressSlider;
+    }
+
+    public Label getCurrentTimeLabel() {
+        return currentTimeLabel;
+    }
+
+    public Label getTotalTimeLabel() {
+        return totalTimeLabel;
     }
 
     public void setSongInfo(String title, String artist) {
