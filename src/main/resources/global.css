@@ -12,3 +12,7 @@
     -fx-spacing: 4px;
     -fx-padding: 4px;
 }
+
+.list-item {
+    -fx-spacing: 10px;
+}
