@@ -1,11 +1,14 @@
 package com.stellargear.cosmicplayer;
 
+import java.io.File;
 import java.util.List;
 
 import com.stellargear.cosmicplayer.services.FileService;
 import com.stellargear.cosmicplayer.services.PlayerService;
 import com.stellargear.cosmicplayer.services.PlayerService.Song;
 import com.stellargear.cosmicplayer.ui.PlayerToolbar;
+import com.stellargear.cosmicplayer.services.SettingsService;
+import com.stellargear.cosmicplayer.ui.SidePanel;
 import com.stellargear.cosmicplayer.ui.SongList;
 
 import javafx.animation.KeyFrame;
@@ -13,6 +16,7 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.concurrent.Task;
@@ -22,12 +26,17 @@ public class App extends Application {
     PlayerService mediaPlayer = new PlayerService();
     FileService fileService = new FileService();
     PlayerToolbar playerToolbar = new PlayerToolbar();
+    SettingsService settingsService = new SettingsService();
     SongList songList = new SongList();
+    SidePanel sidePanel = new SidePanel();
+
+    Stage primaryStage;
 
     @Override
     public void start(Stage stage) {
-        
+
         BorderPane root = new BorderPane();
+        root.setLeft(sidePanel.getNode());
         root.setCenter(songList.getNode());
         root.setBottom(playerToolbar.getNode());
 
@@ -41,24 +50,14 @@ public class App extends Application {
 
         stage.show();
 
-        Task<List<Song>> loadSongsTask = new Task<>() {
-            @Override
-            protected List<Song> call() {
-                return fileService.getSongs("/home/dimewolf/Música/");
-            }
-        };
+        sidePanel.getChooseFolderBtn().setOnAction(e -> chooseFolderAndLoad());
 
-        loadSongsTask.setOnSucceeded(e -> {
-            songList.setItems(loadSongsTask.getValue());
-        });
-
-        loadSongsTask.setOnFailed(e -> {
-            loadSongsTask.getException().printStackTrace();
-        });
-
-        Thread thread = new Thread(loadSongsTask);
-        thread.setDaemon(true);
-        thread.start();
+        String savedFolder = settingsService.getMusicFolder();
+        if (savedFolder != null) {
+            loadSongsFrom(savedFolder);
+        } else {
+            chooseFolderAndLoad();
+        }
 
         playerToolbar.getPlayBtn().setOnAction(e -> {
             Song selected = songList.getSelected();
@@ -137,5 +136,42 @@ public class App extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private void chooseFolderAndLoad() {
+        DirectoryChooser chooser = new DirectoryChooser();
+        chooser.setTitle("Selecciona tu carpeta de música");
+
+        String saved = settingsService.getMusicFolder();
+        if (saved != null && new File(saved).isDirectory()) {
+            chooser.setInitialDirectory(new File(saved));
+        }
+
+        File chosen = chooser.showDialog(primaryStage);
+        if (chosen != null) {
+            settingsService.setMusicFolder(chosen.getAbsolutePath());
+            loadSongsFrom(chosen.getAbsolutePath());
+        }
+    }
+
+    private void loadSongsFrom(String folderPath) {
+        Task<List<Song>> loadSongsTask = new Task<>() {
+            @Override
+            protected List<Song> call() {
+                return fileService.getSongs(folderPath);
+            }
+        };
+
+        loadSongsTask.setOnSucceeded(e -> {
+            songList.setItems(loadSongsTask.getValue());
+        });
+
+        loadSongsTask.setOnFailed(e -> {
+            loadSongsTask.getException().printStackTrace();
+        });
+
+        Thread thread = new Thread(loadSongsTask);
+        thread.setDaemon(true);
+        thread.start();
     }
 }
