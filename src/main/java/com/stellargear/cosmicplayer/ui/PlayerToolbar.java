@@ -61,7 +61,6 @@ public class PlayerToolbar {
         rightBox.setMaxWidth(Double.MAX_VALUE);
 
         songBox.getStyleClass().add("song-box");
-
         songName.getStyleClass().add("song-name");
         bar.getStyleClass().add("player-toolbar");
     }

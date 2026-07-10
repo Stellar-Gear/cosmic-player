@@ -92,4 +92,6 @@ public class PlayerService {
         mediaPlayer.release();
         factory.release();
     }
+
+    public record Song(File file, String title, String artist, String duration) {}
 }
