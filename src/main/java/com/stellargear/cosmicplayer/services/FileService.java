@@ -9,6 +9,8 @@ import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 
+import com.stellargear.cosmicplayer.services.PlayerService.Song;
+
 public class FileService {
 
     public List<File> getSongFiles(String folderPath) {
@@ -20,21 +22,30 @@ public class FileService {
             .toList();
     }
 
-    public List<String> getSongNames(String folderPath) {
-        return getSongFiles(folderPath).stream().map(File::getName).toList();
+    public List<Song> getSongs(String folderPath) {
+        return getSongFiles(folderPath).stream()
+            .map(f -> {
+                SongMetadata meta = readMetadata(f);
+                return new Song(f, meta.title(), meta.artist(), meta.length());
+            })
+            .toList();
     }
 
     public SongMetadata readMetadata(File file) {
         try {
             AudioFile f = AudioFileIO.read(file);
             Tag tag = f.getTag();
+
             String title = tag.getFirst(FieldKey.TITLE);
             String artist = tag.getFirst(FieldKey.ARTIST);
-            return new SongMetadata(title, artist);
+            int dur = f.getAudioHeader().getTrackLength();
+            String length = String.format("%02d:%02d", dur / 60, dur % 60);
+
+            return new SongMetadata(title, artist, length);
         } catch (Exception e) {
-            return new SongMetadata(file.getName(), file.getName());
+            return new SongMetadata(file.getName(), file.getName(), file.getName());
         }
     }
 
-    public record SongMetadata(String title, String artist) {}
+    public record SongMetadata(String title, String artist, String length) {}
 }
