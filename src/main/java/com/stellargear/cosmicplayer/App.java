@@ -53,6 +53,9 @@ public class App extends Application {
 
         sidePanel.getChooseFolderBtn().setOnAction(e -> chooseFolderAndLoad());
 
+        playerToolbar.getLastButton().setOnAction(e -> playPreviousSong());
+        playerToolbar.getNextButton().setOnAction(e -> playNextSong());
+
         String savedFolder = settingsService.getMusicFolder();
         if (savedFolder != null) {
             loadSongsFrom(savedFolder);

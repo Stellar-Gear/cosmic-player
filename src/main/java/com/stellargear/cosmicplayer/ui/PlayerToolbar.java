@@ -22,6 +22,8 @@ public class PlayerToolbar {
     private final Slider volumeSlider = new Slider(0, 1, 1);
     private final VBox songBox = new VBox(songName, artistName);
     private final ImageView coverArtBox = new ImageView();
+    private final Button nextBtn = new Button("Next");
+    private final Button lastBtn = new Button("Last");
 
     private final Slider progressSlider = new Slider(0, 100, 0);
     private final Label currentTimeLabel = new Label("00:00");
@@ -30,7 +32,7 @@ public class PlayerToolbar {
     public PlayerToolbar() {
         HBox leftBox = new HBox(8, coverArtBox, songBox);
         leftBox.setAlignment(Pos.CENTER_LEFT);
-        HBox centerBox = new HBox(playBtn);
+        HBox centerBox = new HBox(lastBtn, playBtn, nextBtn);
         centerBox.setAlignment(Pos.CENTER);
         HBox rightBox = new HBox(volumeSlider);
         rightBox.setAlignment(Pos.CENTER_RIGHT);
@@ -85,6 +87,14 @@ public class PlayerToolbar {
 
     public Label getSongLabel() {
         return songName;
+    }
+
+    public Button getLastButton () {
+        return lastBtn;
+    }
+
+    public Button getNextButton () {
+        return nextBtn;
     }
 
     public Slider getVolumeSlider() {
