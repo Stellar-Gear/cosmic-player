@@ -13,6 +13,7 @@ public class PlayerService {
 
     private double currentVolume = 1.0;
     private File currentSong;
+    private Runnable onEndReached;
 
     public PlayerService() {
         mediaPlayer = factory.mediaPlayers().newMediaPlayer();
@@ -21,6 +22,13 @@ public class PlayerService {
             @Override
             public void playing(MediaPlayer mediaPlayer) {
                 applyVolume(currentVolume);
+            }
+
+            @Override
+            public void finished(MediaPlayer mediaPlayer) {
+                if (onEndReached != null) {
+                    onEndReached.run();
+                }
             }
         });
     }
@@ -57,6 +65,10 @@ public class PlayerService {
     public void changeVolume(double value) {
         currentVolume = value;
         applyVolume(value);
+    }
+
+    public void setOnEndReached(Runnable callback) {
+        this.onEndReached = callback;
     }
 
     private void applyVolume(double value) {
