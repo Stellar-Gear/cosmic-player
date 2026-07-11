@@ -8,6 +8,7 @@ import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.images.Artwork;
 
 import com.stellargear.cosmicplayer.services.PlayerService.Song;
 
@@ -26,7 +27,7 @@ public class FileService {
         return getSongFiles(folderPath).stream()
             .map(f -> {
                 SongMetadata meta = readMetadata(f);
-                return new Song(f, meta.title(), meta.artist(), meta.length());
+                return new Song(f, meta.title(), meta.artist(), meta.length(), meta.coverArt());
             })
             .sorted(Comparator.comparing(
                 (Song s) -> s.title() == null ? "" : s.title(),
@@ -45,11 +46,18 @@ public class FileService {
             int dur = f.getAudioHeader().getTrackLength();
             String length = String.format("%02d:%02d", dur / 60, dur % 60);
 
-            return new SongMetadata(title, artist, length);
+            byte[] coverArtBytes = null;
+            Artwork artwork = tag.getFirstArtwork();
+
+            if (artwork != null) {
+                coverArtBytes = artwork.getBinaryData();
+            }
+
+            return new SongMetadata(title, artist, length, coverArtBytes);
         } catch (Exception e) {
-            return new SongMetadata(file.getName(), file.getName(), file.getName());
+            return new SongMetadata(file.getName(), file.getName(), file.getName(), null);
         }
     }
 
-    public record SongMetadata(String title, String artist, String length) {}
+    public record SongMetadata(String title, String artist, String length, byte[] coverArt) {}
 }

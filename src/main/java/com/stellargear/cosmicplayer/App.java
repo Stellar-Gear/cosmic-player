@@ -66,7 +66,7 @@ public class App extends Application {
                         selected.file(),
                         playerToolbar.getVolumeSlider().getValue()
                     );
-                    playerToolbar.setSongInfo(selected.title(), selected.artist());
+                    playerToolbar.setSongInfo(selected.title(), selected.artist(), selected.coverArt());
             }
         });
 
