@@ -20,6 +20,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.concurrent.Task;
+import javafx.application.Platform;
 
 public class App extends Application {
 
@@ -58,6 +59,8 @@ public class App extends Application {
         } else {
             chooseFolderAndLoad();
         }
+
+        mediaPlayer.setOnEndReached(() -> Platform.runLater(this::playNextSong));
 
         playerToolbar.getPlayBtn().setOnAction(e -> {
             Song selected = songList.getSelected();
@@ -119,6 +122,24 @@ public class App extends Application {
             }
         });
 
+    }
+
+    private void playNextSong() {
+        Song next = songList.getNext();
+        if (next == null) return;
+
+        songList.select(next);
+        mediaPlayer.playOrResume(next.file(), playerToolbar.getVolumeSlider().getValue());
+        playerToolbar.setSongInfo(next.title(), next.artist(), next.coverArt());
+    }
+
+    private void playPreviousSong() {
+        Song last = songList.getPrevious();
+        if (last == null) return;
+
+        songList.select(last);
+        mediaPlayer.playOrResume(last.file(), playerToolbar.getVolumeSlider().getValue());
+        playerToolbar.setSongInfo(last.title(), last.artist(), last.coverArt());
     }
 
     private static String formatTime(long ms) {
