@@ -53,4 +53,8 @@ public class SongList {
         public void select(Song song) {
             listView.getSelectionModel().select(song);
         }
+
+        public ListView<Song>  getList () {
+            return listView;
+        }
 }

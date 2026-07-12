@@ -75,6 +75,19 @@ public class App extends Application {
                     playerToolbar.setSongInfo(selected.title(), selected.artist(), selected.coverArt());
             }
         });
+        
+        songList.getList().setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                Song selected = songList.getSelected();
+                if (selected != null) {
+                    mediaPlayer.playOrResume(
+                        selected.file(),
+                        playerToolbar.getVolumeSlider().getValue()
+                    );
+                     playerToolbar.setSongInfo(selected.title(), selected.artist(), selected.coverArt());
+                }
+            }
+        });
 
         playerToolbar
             .getVolumeSlider()
