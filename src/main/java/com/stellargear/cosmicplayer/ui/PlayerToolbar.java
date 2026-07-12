@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.image.Image;
@@ -24,6 +25,7 @@ public class PlayerToolbar {
     private final ImageView coverArtBox = new ImageView();
     private final Button nextBtn = new Button("Next");
     private final Button lastBtn = new Button("Last");
+    private final ToggleButton shuffleBtn = new ToggleButton("Shuffle");
 
     private final Slider progressSlider = new Slider(0, 100, 0);
     private final Label currentTimeLabel = new Label("00:00");
@@ -34,7 +36,7 @@ public class PlayerToolbar {
         leftBox.setAlignment(Pos.CENTER_LEFT);
         HBox centerBox = new HBox(lastBtn, playBtn, nextBtn);
         centerBox.setAlignment(Pos.CENTER);
-        HBox rightBox = new HBox(volumeSlider);
+        HBox rightBox = new HBox(4 ,shuffleBtn, volumeSlider);
         rightBox.setAlignment(Pos.CENTER_RIGHT);
 
         progressSlider.setMaxWidth(Double.MAX_VALUE);
@@ -111,6 +113,10 @@ public class PlayerToolbar {
 
     public Label getTotalTimeLabel() {
         return totalTimeLabel;
+    }
+
+    public ToggleButton getShuffleBtn () {
+        return shuffleBtn;
     }
 
     public void setSongInfo(String title, String artist, byte[] coverArt) {

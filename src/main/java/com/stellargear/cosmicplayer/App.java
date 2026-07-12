@@ -75,7 +75,7 @@ public class App extends Application {
                     playerToolbar.setSongInfo(selected.title(), selected.artist(), selected.coverArt());
             }
         });
-        
+
         songList.getList().setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 Song selected = songList.getSelected();
@@ -88,6 +88,13 @@ public class App extends Application {
                 }
             }
         });
+
+        playerToolbar
+            .getShuffleBtn()
+            .setOnAction(e -> {
+                songList.setShuffle(playerToolbar.getShuffleBtn().isSelected());
+            }
+        );
 
         playerToolbar
             .getVolumeSlider()
