@@ -77,7 +77,7 @@ public class PlayerService {
             mediaPlayer.audio().setVolume(0);
             return;
         }
-        double db = -12.0 * (1 - value);
+        double db = -11.0 * (1 - value);
         double gain = Math.pow(10, db / 20.0);
         int vol = (int) Math.round(gain * 100);
         mediaPlayer.audio().setVolume(vol);
@@ -103,6 +103,10 @@ public class PlayerService {
     public void release() {
         mediaPlayer.release();
         factory.release();
+    }
+
+    public State getPlayingState () {
+        return mediaPlayer.status().state();
     }
 
     public record Song(File file, String title, String artist, String duration, byte[] coverArt) {}

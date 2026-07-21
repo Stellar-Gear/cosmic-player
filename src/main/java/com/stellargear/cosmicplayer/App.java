@@ -22,6 +22,8 @@ import javafx.util.Duration;
 import javafx.concurrent.Task;
 import javafx.application.Platform;
 
+import uk.co.caprica.vlcj.player.base.State;
+
 public class App extends Application {
 
     PlayerService mediaPlayer = new PlayerService();
@@ -73,6 +75,7 @@ public class App extends Application {
                         playerToolbar.getVolumeSlider().getValue()
                     );
                     playerToolbar.setSongInfo(selected.title(), selected.artist(), selected.coverArt());
+                    updateToolbarButtons();
             }
         });
 
@@ -85,6 +88,7 @@ public class App extends Application {
                         playerToolbar.getVolumeSlider().getValue()
                     );
                      playerToolbar.setSongInfo(selected.title(), selected.artist(), selected.coverArt());
+                     updateToolbarButtons();
                 }
             }
         });
@@ -182,6 +186,7 @@ public class App extends Application {
         launch(args);
     }
 
+
     private void chooseFolderAndLoad() {
         DirectoryChooser chooser = new DirectoryChooser();
         chooser.setTitle("Selecciona tu carpeta de música");
@@ -217,5 +222,23 @@ public class App extends Application {
         Thread thread = new Thread(loadSongsTask);
         thread.setDaemon(true);
         thread.start();
+    }
+
+    public void updateToolbarButtons () {
+        State status = mediaPlayer.getPlayingState();
+
+        switch (status) {
+            case PLAYING:
+                playerToolbar.changeIsPlaying(true);
+                break;
+            case OPENING:
+                playerToolbar.changeIsPlaying(true);
+                break;
+            case PAUSED:
+                playerToolbar.changeIsPlaying(false);
+                break;
+            default:
+                break;
+        }
     }
 }
