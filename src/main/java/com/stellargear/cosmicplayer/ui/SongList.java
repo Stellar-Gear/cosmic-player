@@ -16,6 +16,8 @@ public class SongList {
 
     public SongList() {
         listView.setCellFactory(lv -> new SongCell());
+
+        listView.getStyleClass().add("list-view");
     }
 
     public Song getNext() {
@@ -37,7 +39,13 @@ public class SongList {
 
     public int getNextRandom(List<Song> list) {
         Random randi = new Random();
-        int randomIndex = randi.nextInt(listView.getItems().size());
+        int currentIndex = listView.getSelectionModel().getSelectedIndex();
+        int randomIndex;
+        
+        do {
+            randomIndex = randi.nextInt(list.size());
+        } while (randomIndex == currentIndex);
+        
         return randomIndex;
     }
 
