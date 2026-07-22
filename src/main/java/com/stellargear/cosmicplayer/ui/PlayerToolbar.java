@@ -12,16 +12,17 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import java.io.ByteArrayInputStream;
+
+import com.stellargear.cosmicplayer.utils.Methods;
 
 public class PlayerToolbar {
 
     private final GridPane bar = new GridPane();
 
-    private final Label songName = new Label("Song Name");
-    private final Label artistName = new Label("Artist");
-    private final Label currentTimeLabel = new Label("00:00");
-    private final Label totalTimeLabel = new Label("00:00");
+    private final Label songName = new Label("");
+    private final Label artistName = new Label("");
+    private final Label currentTimeLabel = new Label("");
+    private final Label totalTimeLabel = new Label("");
 
     private final Button playBtn = new Button();
     private final Button nextBtn = new Button();
@@ -112,7 +113,6 @@ public class PlayerToolbar {
         songBox.getStyleClass().add("song-box");
         songName.getStyleClass().add("song-name");
         bar.getStyleClass().add("player-toolbar");
-        coverArtBox.setStyle("-fx-border-color: red; -fx-border-width: 2;");
         progressBox.getStyleClass().add("progress-box");
         playBtn.getStyleClass().add("play-button");
         shuffleBtn.getStyleClass().add("shuffle-button");
@@ -131,18 +131,11 @@ public class PlayerToolbar {
         }
     }
 
-    Image toImage(byte[] coverArtBytes) {
-        if (coverArtBytes == null || coverArtBytes.length == 0) {
-            return new Image(getClass().getResourceAsStream("/images/default_cover.png"));
-        }
-        return new Image(new ByteArrayInputStream(coverArtBytes));
-    }
-
     /// Setters
     public void setSongInfo(String title, String artist, byte[] coverArt) {
         songName.setText(title);
         artistName.setText(artist);
-        coverArtBox.setImage(toImage(coverArt));
+        coverArtBox.setImage(Methods.toImage(coverArt, 80));
     }
 
     public void changeIsPlaying (boolean value) {

@@ -38,6 +38,8 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
 
+        this.primaryStage = stage;
+
         BorderPane root = new BorderPane();
         root.setLeft(sidePanel.getNode());
         root.setCenter(songList.getNode());
@@ -148,7 +150,6 @@ public class App extends Application {
                 mediaPlayer.seek(newTime);
             }
         });
-
     }
 
     private void playNextSong() {

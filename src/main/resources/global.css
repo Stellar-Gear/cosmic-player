@@ -1,5 +1,6 @@
 .root {
     -ink-black: #0F0E1C;
+    -space-indigo: #1e1b4b;
 }
 
 .song-name {
@@ -17,6 +18,10 @@
     -fx-spacing: 4px;
     -fx-padding: 8px;
     -fx-background-color: -ink-black;
+}
+
+.progress-box {
+    -fx-text-background-color: white;
 }
 
 .play-button {
@@ -48,5 +53,8 @@
 }
 
 .list-item {
-    -fx-spacing: 10px;
+    -fx-padding: 6px 10px;
+    -fx-spacing: 8px;
+    -fx-background-color: -ink-black;
+    -fx-text-background-color: white;
 }
